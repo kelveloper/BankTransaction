@@ -23,6 +23,7 @@ import {
   PersonAdd,
   AddCard
 } from '@mui/icons-material';
+import { apiCall } from '../config/api';
 
 const Home = () => {
   const [dashboardStats, setDashboardStats] = useState({
@@ -39,15 +40,15 @@ const Home = () => {
     const fetchDashboardData = async () => {
       try {
         // Get all customers count
-        const customersResponse = await fetch('api/customers');
+        const customersResponse = await apiCall('api/customers');
         const customers = await customersResponse.json();
         
         // Get all accounts count  
-        const accountsResponse = await fetch('api/accounts');
+        const accountsResponse = await apiCall('api/accounts');
         const accounts = await accountsResponse.json();
         
         // Get all transactions count
-        const transactionsResponse = await fetch('api/transactions');
+        const transactionsResponse = await apiCall('api/transactions');
         const transactions = await transactionsResponse.json();
 
         setDashboardStats({
