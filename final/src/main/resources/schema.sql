@@ -11,55 +11,55 @@ DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS banks CASCADE;
 
 CREATE TABLE customers (
-    "customerId" SERIAL PRIMARY KEY,
-    "firstName" VARCHAR(50) NOT NULL,
-    "lastName" VARCHAR(50) NOT NULL,
+    customerid SERIAL PRIMARY KEY,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
     email VARCHAR(100),
-    "phoneNumber" VARCHAR(20),
-    "bankPin" VARCHAR(4)
+    phonenumber VARCHAR(20),
+    bankpin VARCHAR(4)
 );
 
 CREATE TABLE accounts ( 
-    "accountId" SERIAL PRIMARY KEY,
+    accountid SERIAL PRIMARY KEY,
     balance DECIMAL(10,2),
-    "accountType" VARCHAR(50),
-    "interestRate" DECIMAL(5,2)
+    accounttype VARCHAR(50),
+    interestrate DECIMAL(5,2)
 );
 
 CREATE TABLE transactions (
-    "transactionID" SERIAL PRIMARY KEY,
-    "transactionType" VARCHAR(50),
+    transactionid SERIAL PRIMARY KEY,
+    transactiontype VARCHAR(50),
     amount DECIMAL(10,2),
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE banks (
-    "bankId" SERIAL PRIMARY KEY,
+    bankid SERIAL PRIMARY KEY,
     name VARCHAR(100),
     address VARCHAR(255)
 );
 
 CREATE TABLE customers_accounts (
-    "accountId" INT,
-    "customerID" INT,
-    PRIMARY KEY ("accountId", "customerID"),
-    FOREIGN KEY ("accountId") REFERENCES accounts("accountId"),
-    FOREIGN KEY ("customerID") REFERENCES customers("customerId")
+    accountid INT,
+    customerid INT,
+    PRIMARY KEY (accountid, customerid),
+    FOREIGN KEY (accountid) REFERENCES accounts(accountid),
+    FOREIGN KEY (customerid) REFERENCES customers(customerid)
 );
 
 CREATE TABLE accounts_transactions (
-    "accountId" INT,
-    "transactionId" INT,
-    PRIMARY KEY ("accountId", "transactionId"),
-    FOREIGN KEY ("accountId") REFERENCES accounts("accountId"),
-    FOREIGN KEY ("transactionId") REFERENCES transactions("transactionID")
+    accountid INT,
+    transactionid INT,
+    PRIMARY KEY (accountid, transactionid),
+    FOREIGN KEY (accountid) REFERENCES accounts(accountid),
+    FOREIGN KEY (transactionid) REFERENCES transactions(transactionid)
 );
 
--- Note: DAO expects bank_customers (not customers_banks) with customerID (uppercase ID)
+-- Note: DAO expects bank_customers (not customers_banks) with customerid (lowercase)
 CREATE TABLE bank_customers (
-    "customerID" INT,
-    "bankId" INT,
-    PRIMARY KEY ("customerID", "bankId"),
-    FOREIGN KEY ("customerID") REFERENCES customers("customerId"),
-    FOREIGN KEY ("bankId") REFERENCES banks("bankId")
+    customerid INT,
+    bankid INT,
+    PRIMARY KEY (customerid, bankid),
+    FOREIGN KEY (customerid) REFERENCES customers(customerid),
+    FOREIGN KEY (bankid) REFERENCES banks(bankid)
 );
