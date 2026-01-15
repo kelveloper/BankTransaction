@@ -47,9 +47,10 @@ public class  CustomerDaoImpl implements CustomerDao{
             return statement;
 
         }, keyHolder);
-        customer.setCustomerId(keyHolder.getKey().intValue());
+        Integer customerId = (Integer) keyHolder.getKeys().get("customerid");
+        customer.setCustomerId(customerId);
         if (!customer.getBankName().trim().isEmpty()) {
-            addCustomerToBank(keyHolder.getKey().intValue(), getCustomerBankId(customer.getBankName()));
+            addCustomerToBank(customerId, getCustomerBankId(customer.getBankName()));
         }
         return customer;
     }
