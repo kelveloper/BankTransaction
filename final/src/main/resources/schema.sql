@@ -27,7 +27,7 @@ CREATE TABLE accounts (
 );
 
 CREATE TABLE transactions (
-    "transactionId" SERIAL PRIMARY KEY,
+    "transactionID" SERIAL PRIMARY KEY,
     "transactionType" VARCHAR(50),
     amount DECIMAL(10,2),
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -41,10 +41,10 @@ CREATE TABLE banks (
 
 CREATE TABLE customers_accounts (
     "accountId" INT,
-    "customerId" INT,
-    PRIMARY KEY ("accountId", "customerId"),
+    "customerID" INT,
+    PRIMARY KEY ("accountId", "customerID"),
     FOREIGN KEY ("accountId") REFERENCES accounts("accountId"),
-    FOREIGN KEY ("customerId") REFERENCES customers("customerId")
+    FOREIGN KEY ("customerID") REFERENCES customers("customerId")
 );
 
 CREATE TABLE accounts_transactions (
@@ -52,14 +52,14 @@ CREATE TABLE accounts_transactions (
     "transactionId" INT,
     PRIMARY KEY ("accountId", "transactionId"),
     FOREIGN KEY ("accountId") REFERENCES accounts("accountId"),
-    FOREIGN KEY ("transactionId") REFERENCES transactions("transactionId")
+    FOREIGN KEY ("transactionId") REFERENCES transactions("transactionID")
 );
 
--- Note: DAO expects bank_customers (not customers_banks)
+-- Note: DAO expects bank_customers (not customers_banks) with customerID (uppercase ID)
 CREATE TABLE bank_customers (
-    "customerId" INT,
+    "customerID" INT,
     "bankId" INT,
-    PRIMARY KEY ("customerId", "bankId"),
-    FOREIGN KEY ("customerId") REFERENCES customers("customerId"),
+    PRIMARY KEY ("customerID", "bankId"),
+    FOREIGN KEY ("customerID") REFERENCES customers("customerId"),
     FOREIGN KEY ("bankId") REFERENCES banks("bankId")
 );

@@ -25,12 +25,12 @@ INSERT INTO transactions ("transactionType", amount) VALUES
 ('Transfer', 1000.00),
 ('Deposit', 750.50);
 
--- Relationship tables
-INSERT INTO customers_accounts ("customerId", "accountId") VALUES
+-- Relationship tables  
+INSERT INTO customers_accounts ("customerID", "accountId") VALUES
 (1, 1), (1, 2), (2, 3), (2, 4);
 
 INSERT INTO accounts_transactions ("accountId", "transactionId") VALUES
 (1, 1), (1, 2), (2, 3), (3, 4);
 
-INSERT INTO bank_customers ("customerId", "bankId") VALUES
+INSERT INTO bank_customers ("customerID", "bankId") VALUES
 (1, 1), (2, 1), (3, 2);
