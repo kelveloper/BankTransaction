@@ -39,6 +39,7 @@ import {
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
+import { apiCall } from '../config/api';
 import { FormControl, InputLabel } from '@mui/material';
 
 function Customer() {
@@ -98,7 +99,7 @@ function Customer() {
   async function getAllCustomers() {
     setLoading(true);
     try {
-      const response = await fetch('api/customers');
+      const response = await apiCall('api/customers');
       if (!response.ok) {
         throw new Error("Error retrieving all customers! status: " + response.status);
       }
@@ -142,7 +143,7 @@ function Customer() {
       bankPin: editCustomer.bankPin,
       bankName: editCustomer.bankName
     }
-    await fetch('api/customers/add', {
+    await apiCall('api/customers/add', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -172,7 +173,7 @@ function Customer() {
       bankName: editCustomer.bankName
 
     }
-    await fetch('api/customers/' + data.customerId, {
+    await apiCall('api/customers/' + data.customerId, {
       method: 'PUT',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -185,7 +186,7 @@ function Customer() {
     })
   }
   async function handleDelete(id) {
-    await fetch('api/customers/' + id, {
+    await apiCall('api/customers/' + id, {
       method: 'DELETE',
     }).then(() => {
       getAllCustomers();
