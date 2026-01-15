@@ -82,7 +82,7 @@ const Home = () => {
               {title}
             </Typography>
             <Typography variant="h4" component="h2" sx={{ color: '#2c3e50', fontWeight: 600, mb: 0.5 }}>
-              {loading ? '...' : value.toLocaleString()}
+              {loading ? '...' : (value || 0).toLocaleString()}
             </Typography>
             {subtitle && (
               <Typography color="textSecondary" variant="body2" sx={{ fontSize: '0.875rem' }}>

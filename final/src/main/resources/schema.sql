@@ -1,55 +1,65 @@
--- PostgreSQL Schema for Banking Application
--- Note: PostgreSQL uses SERIAL instead of AUTO_INCREMENT
+-- PostgreSQL Schema matching DAO expectations
+-- Using quoted identifiers for mixed case to match Java DAO queries
 
-CREATE TABLE IF NOT EXISTS customers (
-    customerid SERIAL PRIMARY KEY,
-    firstname VARCHAR(50) NOT NULL,
-    lastname VARCHAR(50) NOT NULL,
+-- Drop existing tables in correct order (due to foreign key constraints)
+DROP TABLE IF EXISTS bank_customers CASCADE;
+DROP TABLE IF EXISTS accounts_transactions CASCADE;
+DROP TABLE IF EXISTS customers_accounts CASCADE;
+DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS accounts CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS banks CASCADE;
+
+CREATE TABLE customers (
+    "customerId" SERIAL PRIMARY KEY,
+    "firstName" VARCHAR(50) NOT NULL,
+    "lastName" VARCHAR(50) NOT NULL,
     email VARCHAR(100),
-    phonenumber VARCHAR(20),
-    bankpin VARCHAR(4)
+    "phoneNumber" VARCHAR(20),
+    "bankPin" VARCHAR(4)
 );
 
-CREATE TABLE IF NOT EXISTS accounts ( 
-    accountid SERIAL PRIMARY KEY,
+CREATE TABLE accounts ( 
+    "accountId" SERIAL PRIMARY KEY,
     balance DECIMAL(10,2),
-    accounttype VARCHAR(50),
-    interestrate DECIMAL(5,2)
+    "accountType" VARCHAR(50),
+    "interestRate" DECIMAL(5,2)
 );
 
-CREATE TABLE IF NOT EXISTS transactions (
-    transactionid SERIAL PRIMARY KEY,
-    transactiontype VARCHAR(50),
+CREATE TABLE transactions (
+    "transactionId" SERIAL PRIMARY KEY,
+    "transactionType" VARCHAR(50),
     amount DECIMAL(10,2),
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS banks (
-    bankid SERIAL PRIMARY KEY,
+CREATE TABLE banks (
+    "bankId" SERIAL PRIMARY KEY,
     name VARCHAR(100),
     address VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS customers_accounts (
-    accountid INT,
-    customerid INT,
-    PRIMARY KEY (accountid, customerid),
-    FOREIGN KEY (accountid) REFERENCES accounts(accountid),
-    FOREIGN KEY (customerid) REFERENCES customers(customerid)
+CREATE TABLE customers_accounts (
+    "accountId" INT,
+    "customerId" INT,
+    PRIMARY KEY ("accountId", "customerId"),
+    FOREIGN KEY ("accountId") REFERENCES accounts("accountId"),
+    FOREIGN KEY ("customerId") REFERENCES customers("customerId")
 );
 
-CREATE TABLE IF NOT EXISTS accounts_transactions (
-    accountid INT,
-    transactionid INT,
-    PRIMARY KEY (accountid, transactionid),
-    FOREIGN KEY (accountid) REFERENCES accounts(accountid),
-    FOREIGN KEY (transactionid) REFERENCES transactions(transactionid)
+CREATE TABLE accounts_transactions (
+    "accountId" INT,
+    "transactionId" INT,
+    PRIMARY KEY ("accountId", "transactionId"),
+    FOREIGN KEY ("accountId") REFERENCES accounts("accountId"),
+    FOREIGN KEY ("transactionId") REFERENCES transactions("transactionId")
 );
 
-CREATE TABLE IF NOT EXISTS customers_banks (
-    customerid INT,
-    bankid INT,
-    PRIMARY KEY (customerid, bankid),
-    FOREIGN KEY (customerid) REFERENCES customers(customerid),
-    FOREIGN KEY (bankid) REFERENCES banks(bankid)
+-- Note: DAO expects bank_customers (not customers_banks)
+CREATE TABLE bank_customers (
+    "customerId" INT,
+    "bankId" INT,
+    PRIMARY KEY ("customerId", "bankId"),
+    FOREIGN KEY ("customerId") REFERENCES customers("customerId"),
+    FOREIGN KEY ("bankId") REFERENCES banks("bankId")
 );
