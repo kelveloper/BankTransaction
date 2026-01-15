@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 
 import {useState, useEffect} from "react"
 import Donut from "../component/Donut"
+import { apiCall } from '../config/api'
 
 function Bank() {
   const [bankData, setBankData] = useState([]);
@@ -29,7 +30,7 @@ function Bank() {
   const [balances, setBalances] = useState([]);
 
   useEffect(() => {
-    fetch('api/banks')
+    apiCall('api/banks')
       .then((res) => {
         return res.json();
       })
@@ -43,7 +44,7 @@ function Bank() {
     setBankBoolean(false)
     setCustomerBoolean(true)
     setBankName(name)
-    fetch('api/banks/customers/' + id)
+    apiCall('api/banks/customers/' + id)
       .then((res) => {
         return res.json();
       })
@@ -51,7 +52,7 @@ function Bank() {
         setCustomerData(data);
       });
     
-    fetch('api/banks/customers/count')
+    apiCall('api/banks/customers/count')
       .then((res) => {
         return res.json();
       })
@@ -59,7 +60,7 @@ function Bank() {
         setOtherBankCustomers(data);
       });
     
-    fetch('api/banks/customers/count/' + id)
+    apiCall('api/banks/customers/count/' + id)
       .then((res) => {
         return res.json();
       })
@@ -71,7 +72,7 @@ function Bank() {
   async function getAccounts(id) {
     setCustomerBoolean(false)
     setAccountBoolean(true)
-    fetch('api/accounts/customer/' + id)
+    apiCall('api/accounts/customer/' + id)
     .then((res) => {
       return res.json();
     })
@@ -84,7 +85,7 @@ function Bank() {
   async function getTransactions(id) {
     setAccountBoolean(false)
     setTransactionBoolean(true)
-    fetch('api/transactions/account/' + id)
+    apiCall('api/transactions/account/' + id)
     .then((res) => {
       return res.json();
     })
@@ -92,7 +93,7 @@ function Bank() {
       //console.log(data);
       setTransactionData(data);
     })
-    fetch('api/banks/deposit/' + id)
+    apiCall('api/banks/deposit/' + id)
     .then((res) => {
       return res.json();
     })
@@ -100,7 +101,7 @@ function Bank() {
       //console.log(data);
       setDeposit(data);
     })
-    fetch('api/banks/withdraw/' + id)
+    apiCall('api/banks/withdraw/' + id)
     .then((res) => {
       return res.json();
     })

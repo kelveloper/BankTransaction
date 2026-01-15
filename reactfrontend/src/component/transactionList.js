@@ -4,6 +4,7 @@ import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
+import { apiCall } from '../config/api';
 
 
 function TransactionList() {
@@ -11,7 +12,7 @@ function TransactionList() {
 
 
     useEffect(() => {
-      fetch('api/transactions')
+      apiCall('api/transactions')
         .then((res) => {
           return res.json();
         })

@@ -28,6 +28,7 @@ import {useState, useEffect} from "react"
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from 'react-router-dom';
+import { apiCall } from '../config/api';
 
 function Account() {
   const [accountData, setAccountData] = useState([]);
@@ -51,7 +52,7 @@ function Account() {
   };
   
   useEffect(() => {
-    fetch('api/accounts')
+    apiCall('api/accounts')
       .then((res) => {
         return res.json();
       })
@@ -83,7 +84,7 @@ function Account() {
   }
 
   async function getAccount() {
-    fetch('api/accounts')
+    apiCall('api/accounts')
       .then((res) => {
         return res.json();
       })
@@ -98,7 +99,7 @@ function Account() {
       accountType: accountType,
       interestRate: AccountInterestRate};
     
-    await fetch('api/accounts/add/' + CustomerID, {
+    await apiCall('api/accounts/add/' + CustomerID, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -117,7 +118,7 @@ function Account() {
   }
 
   async function deleteAccount(id) {
-    await fetch('api/accounts/delete/' + id, { method: 'DELETE' });
+    await apiCall('api/accounts/delete/' + id, { method: 'DELETE' });
     getAccount();
   }
 
@@ -132,7 +133,7 @@ function Account() {
       balance: editAccount.balance,
       accountType: editAccount.accountType,
       interestRate: editAccount.interestRate}
-      await fetch('api/accounts/update', {
+      await apiCall('api/accounts/update', {
         method: 'PUT',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
