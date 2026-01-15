@@ -1,18 +1,25 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Chip
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -91,7 +98,7 @@ function Account() {
       accountType: accountType,
       interestRate: AccountInterestRate};
     
-    await fetch('http://localhost:3000/api/accounts/add/' + CustomerID, {
+    await fetch('api/accounts/add/' + CustomerID, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -125,7 +132,7 @@ function Account() {
       balance: editAccount.balance,
       accountType: editAccount.accountType,
       interestRate: editAccount.interestRate}
-      await fetch('http://localhost:3000/api/accounts/update', {
+      await fetch('api/accounts/update', {
         method: 'PUT',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -152,9 +159,29 @@ function Account() {
   }
 
   return (
-    <div className="Account">
-    <Button variant="outlined" startIcon={<AddCircleOutlineIcon />} onClick={handleAdd}
-    style={{ margin: '8px', borderColor: 'green' , color: 'green'}}>Add a Account</Button>
+    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      {/* Header Section */}
+      <Box mb={4}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+          Account Management
+        </Typography>
+        <Typography variant="body1" color="textSecondary" mb={3}>
+          Manage customer accounts, balances, and account types
+        </Typography>
+        
+        <Button 
+          variant="contained" 
+          startIcon={<AddCircleOutlineIcon />}
+          onClick={handleAdd} 
+          size="large"
+          sx={{ mb: 3 }}
+        >
+          Add New Account
+        </Button>
+      </Box>
+
+      <Card elevation={3}>
+        <CardContent sx={{ p: 0 }}>
 
 
     <Dialog open={openDialog} onClose={handleCloseDialog}>
@@ -271,7 +298,9 @@ function Account() {
         </TableBody>
       </Table>
     </TableContainer>
-  </div>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 

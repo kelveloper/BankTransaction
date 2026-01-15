@@ -33,7 +33,7 @@ function TransactionID() {
 
   useEffect(() => {
 
-      fetch(`http://localhost:3000/api/transactions/account/${TransactionID}`)
+      fetch(`api/transactions/account/${TransactionID}`)
         .then((res) => {
             return res.json()
         })
@@ -87,7 +87,7 @@ function TransactionID() {
       amount,
     };
 
-    await fetch(`http://localhost:3000/api/add/${TransactionID}`, {
+    await fetch(`api/add/${TransactionID}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -105,7 +105,7 @@ function TransactionID() {
     setOpenTransferDialog(true);
   
     // Fetch accounts and update the 'accounts' state
-    fetch("http://localhost:3000/api/accounts")
+    fetch("api/accounts")
       .then((res) => res.json())
       .then((data) => {
         setAccounts(data);
@@ -136,7 +136,7 @@ function TransactionID() {
       newAccountId: destinationAccount,
     };
 
-    await fetch("http://localhost:3000/api/transfer", {
+    await fetch("api/transfer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

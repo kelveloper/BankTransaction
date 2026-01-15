@@ -46,7 +46,7 @@ function AccountID() {
     let { Accountid } = useParams();
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/accounts/customer/' + Accountid)
+        fetch('api/accounts/customer/' + Accountid)
           .then((res) => {
             return res.json();
           })
@@ -56,7 +56,7 @@ function AccountID() {
           });
       }, [Accountid]);
       async function getAccount() {
-        fetch('http://localhost:3000/api/accounts/customer/' + Accountid)
+        fetch('api/accounts/customer/' + Accountid)
           .then((res) => {
             return res.json();
           })
@@ -81,7 +81,7 @@ function AccountID() {
           balance: editAccount.balance,
           accountType: editAccount.accountType,
           interestRate: editAccount.interestRate}
-          await fetch('http://localhost:3000/api/accounts/update', {
+          await fetch('api/accounts/update', {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -120,7 +120,7 @@ function AccountID() {
           accountType: accountType,
           interestRate: AccountInterestRate};
         
-        await fetch('http://localhost:3000/api/accounts/add/' + Accountid, {
+        await fetch('api/accounts/add/' + Accountid, {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
@@ -139,7 +139,7 @@ function AccountID() {
     
     
       async function deleteAccount(id) {
-        await fetch('http://localhost:3000/api/accounts/delete/' + id, { method: 'DELETE' });
+        await fetch('api/accounts/delete/' + id, { method: 'DELETE' });
         getAccount();
       }
 

@@ -1,35 +1,56 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { useState, useEffect } from "react"
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  Chip,
+  InputAdornment,
+  IconButton,
+  Tooltip,
+  Alert,
+  CircularProgress
+} from '@mui/material';
+import { useState, useEffect } from "react";
+import {
+  Delete as DeleteIcon,
+  Add as AddIcon,
+  Edit as EditIcon,
+  Search as SearchIcon,
+  PersonAdd as PersonAddIcon,
+  AccountBalance as BankIcon,
+  Clear as ClearIcon
+} from '@mui/icons-material';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-
-import EditIcon from '@mui/icons-material/Edit';
-
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FormControl, InputLabel } from '@mui/material';
 
 function Customer() {
   const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [validationError, setValidationError] = React.useState(false);
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBank, setSelectedBank] = useState('All Banks');
 
   const initialCustomerState = {
     customerId: '',
@@ -56,22 +77,49 @@ function Customer() {
   useEffect(() => {
     getAllCustomers();
   }, []);
+
+  useEffect(() => {
+    // Filter customers based on search term and selected bank
+    let filtered = customers.filter(customer => {
+      const matchesSearch = 
+        customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.customerId.toString().includes(searchTerm);
+      
+      const matchesBank = selectedBank === 'All Banks' || customer.bankName === selectedBank;
+      
+      return matchesSearch && matchesBank;
+    });
+    
+    setFilteredCustomers(filtered);
+  }, [customers, searchTerm, selectedBank]);
   
   async function getAllCustomers() {
-    fetch('api/customers')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Error retrieving all customers! status: " + response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setCustomers(data);
-      })
-      .catch(error => {
-        console.error('Error fetching customer data', error);
-      });
+    setLoading(true);
+    try {
+      const response = await fetch('api/customers');
+      if (!response.ok) {
+        throw new Error("Error retrieving all customers! status: " + response.status);
+      }
+      const data = await response.json();
+      setCustomers(data);
+      setFilteredCustomers(data);
+    } catch (error) {
+      console.error('Error fetching customer data', error);
+    } finally {
+      setLoading(false);
+    }
   }
+
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm('');
+    setSelectedBank('All Banks');
+  };
   async function handleAdd() {
     setIsAddingCustomer(true);
     setOpenDialog(true);
@@ -154,164 +202,384 @@ function Customer() {
     */
 
   }
-  return (<div className="Customer">
+  const bankOptions = ['All Banks', 'Wells Fargo', 'Bank of America', 'JP Morgan Chase', 'CitiBank'];
 
-    <Button variant="outlined" startIcon={<AddCircleOutlineIcon />}
-      onClick={handleAdd} style={{ margin: '8px', borderColor: 'green' , color: 'green'}}>Add New Customer</Button>
-
-    <Dialog open={openDialog} onClose={handleCloseDialog}>
-      <DialogTitle >
-        {isAddingCustomer ? 'Add New Customer' : 'Edit Customer'}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          {isAddingCustomer ? 'Fill in the details to add a new customer' : 'Edit the details for the customer'}
-        </DialogContentText>
-        {isEditingCustomer &&
-
-          (<TextField
-            disabled
-            label="Customer Id"
-            variant="filled"
-            value={isEditingCustomer ? editCustomer.customerId : ''}
-            fullWidth
-            required
-          />)
-        }
-        <TextField
-          label="First Name"
-          variant="filled"
-          value={ editCustomer.firstName}
-          onChange={(e) => setEditCustomer({ ...editCustomer, firstName: e.target.value })}
-          fullWidth
-          required
-        />
-        <TextField
-          label="Last Name"
-          variant="filled"
-          value={ editCustomer.lastName}
-          onChange={(e) => setEditCustomer({ ...editCustomer, lastName: e.target.value })}
-          fullWidth
-          required
-        />
-        <TextField
-          label="Email"
-          variant="filled"
-          value={ editCustomer.email}
-          onChange={(e) => setEditCustomer({ ...editCustomer, email: e.target.value })}
-          fullWidth
-        />
-        <TextField
-          label="Phone Number"
-          variant="filled"
-          value={ editCustomer.phoneNumber}
-          onChange={(e) => setEditCustomer({ ...editCustomer, phoneNumber: e.target.value })}
-          fullWidth
-        />
-        <TextField
-          label="Bank Pin"
-          variant="filled"
-          value={ editCustomer.bankPin}
-          onChange={(e) => setEditCustomer({ ...editCustomer, bankPin: e.target.value })}
-          fullWidth
-          inputProps={{ maxLength: 4 }}
-        />
-        {<FormControl fullWidth>
-          <InputLabel id="bankLabel">Select Bank</InputLabel>
-          <Select
-          label="Select Bank"
-          variant="filled"
-          value={( editCustomer.bankName)}
-          onChange={(e) => setEditCustomer({ ...editCustomer, bankName: e.target.value })}
-          fullWidth>
-            <MenuItem value="Wells Fargo">Wells Fargo</MenuItem>
-            <MenuItem value="Bank of America">Bank of America</MenuItem>
-            <MenuItem value="JP Morgan Chase">JP Morgan Chase</MenuItem>
-            <MenuItem value="CitiBank">CitiBank</MenuItem>
-        </Select>
-        </FormControl>
-        }
-        {validationError && (
-          <p style={{ color: 'red' }}>Please fill in all required fields.</p>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="secondary">
-          Cancel
-        </Button>
-        <Button onClick={isAddingCustomer ? handleSubmit : handleEditSubmit} color="primary">
-          {isAddingCustomer ? 'Submit' : 'Save Changes'}
-        </Button>
-      </DialogActions>
-    </Dialog>
-
-    <TableContainer component={Paper} className="bg-white shadow-md rounded my-6">
-      <Table sx={{ minWidth: 650 }} aria-label="simple table" className="min-w-full">
-
-        <TableHead className="bg-gray-300 text-white">
-
-          <TableRow>
-            <TableCell >Customer Id</TableCell>
-            <TableCell align="right">First Name</TableCell>
-            <TableCell align="right">Last Name</TableCell>
-            <TableCell align="right">Email</TableCell>
-            <TableCell align="right">Phone Number</TableCell>
-            <TableCell align="right">Bank Pin</TableCell>
-            <TableCell align="right">Accounts</TableCell>
-            <TableCell align="right">Bank</TableCell>
-            <TableCell align="right">Action</TableCell>
-            
-
-          </TableRow>
-        </TableHead>
-        <TableBody>
-
-          {customers.map((customer) => (
-
-            <TableRow
-              key={customers.customerId}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-
+  return (
+    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      {/* Header Section */}
+      <Box mb={4}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+          Customer Management
+        </Typography>
+        <Typography variant="body1" color="textSecondary" mb={3}>
+          Manage customer accounts, information, and banking relationships
+        </Typography>
+        
+        {/* Statistics Cards */}
+        <Grid container spacing={2} mb={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={2}>
+              <CardContent sx={{ textAlign: 'center' }}>
+                <Typography variant="h4" color="primary" gutterBottom>
+                  {loading ? '...' : customers.length}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Total Customers
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={2}>
+              <CardContent sx={{ textAlign: 'center' }}>
+                <Typography variant="h4" color="success.main" gutterBottom>
+                  {loading ? '...' : filteredCustomers.length}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Filtered Results
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+        
+        {/* Search and Actions Section */}
+        <Card elevation={2} sx={{ p: 3, mb: 3 }}>
+          <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} alignItems={{ md: 'center' }} justifyContent="space-between">
+            <Box display="flex" gap={2} flexGrow={1} flexDirection={{ xs: 'column', sm: 'row' }}>
+              <TextField
+                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                size="medium"
+                sx={{ minWidth: { sm: 300 } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchTerm && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setSearchTerm('')} size="small">
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <FormControl size="medium" sx={{ minWidth: 180 }}>
+                <InputLabel>Filter by Bank</InputLabel>
+                <Select
+                  value={selectedBank}
+                  label="Filter by Bank"
+                  onChange={(e) => setSelectedBank(e.target.value)}
+                  startAdornment={<BankIcon sx={{ mr: 1, color: 'action.active' }} />}
+                >
+                  {bankOptions.map((bank) => (
+                    <MenuItem key={bank} value={bank}>
+                      {bank}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {(searchTerm || selectedBank !== 'All Banks') && (
+                <Button onClick={clearSearch} variant="outlined" color="secondary">
+                  Clear Filters
+                </Button>
+              )}
+            </Box>
+            <Button 
+              variant="contained" 
+              startIcon={<PersonAddIcon />}
+              onClick={handleAdd} 
+              size="large"
+              sx={{ px: 3 }}
             >
-              <TableCell component="th" scope="row">
-                {customer.customerId}
-              </TableCell>
-              <TableCell align="right">{customer.firstName}</TableCell>
-              <TableCell align="right">{customer.lastName}</TableCell>
-              <TableCell align="right">{customer.email}</TableCell>
-              <TableCell align="right">{customer.phoneNumber}</TableCell>
-              <TableCell align="right">{customer.bankPin}</TableCell>
-              <TableCell align="right">
-                <ul>{customer.accounts.map(accountId => (
-                  <li key={accountId}>
-                    <Button style={{ margin: '8px', backgroundColor: 'blue' }} size="small" color="primary" variant="contained" >{accountId}</Button>
-                  </li>
-                ))}
-                </ul>
-              </TableCell>
-              <TableCell align="right">{customer.bankName}</TableCell>
+              Add New Customer
+            </Button>
+          </Box>
+        </Card>
+      </Box>
 
-              <TableCell align="right">
-                <Button variant="outlined" color="primary" startIcon={<EditIcon />} onClick={() => handleEdit(customer)}>
-                  Edit
-                </Button>
-                <Button style={{ color: 'red', margin: '8px', bordercolor: 'red' }} variant="outlined" color="secondary" startIcon={<DeleteIcon />} onClick={() => handleDelete(customer.customerId)}>
-                  Delete
-                </Button>
-                <Button variant="outlined" color="secondary" onClick={() => handleAddAccount(customer.customerId)}>
-                  Add Account
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+      {/* Add/Edit Customer Dialog */}
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          elevation: 8,
+          sx: { borderRadius: 2 }
+        }}
+      >
+        <DialogTitle sx={{ pb: 1 }}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <PersonAddIcon color="primary" />
+            <Typography variant="h5" component="span">
+              {isAddingCustomer ? 'Add New Customer' : 'Edit Customer'}
+            </Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 2 }}>
+          {validationError && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              Please fill in all required fields (First Name, Last Name, and Bank).
+            </Alert>
+          )}
+          
+          <Grid container spacing={3}>
+            {isEditingCustomer && (
+              <Grid item xs={12}>
+                <TextField
+                  disabled
+                  label="Customer ID"
+                  variant="outlined"
+                  value={editCustomer.customerId}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">#</InputAdornment>,
+                  }}
+                />
+              </Grid>
+            )}
+            
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="First Name *"
+                variant="outlined"
+                value={editCustomer.firstName}
+                onChange={(e) => setEditCustomer({ ...editCustomer, firstName: e.target.value })}
+                fullWidth
+                required
+                error={validationError && !editCustomer.firstName}
+              />
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Last Name *"
+                variant="outlined"
+                value={editCustomer.lastName}
+                onChange={(e) => setEditCustomer({ ...editCustomer, lastName: e.target.value })}
+                fullWidth
+                required
+                error={validationError && !editCustomer.lastName}
+              />
+            </Grid>
+            
+            <Grid item xs={12}>
+              <TextField
+                label="Email Address"
+                variant="outlined"
+                type="email"
+                value={editCustomer.email}
+                onChange={(e) => setEditCustomer({ ...editCustomer, email: e.target.value })}
+                fullWidth
+                placeholder="customer@email.com"
+              />
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Phone Number"
+                variant="outlined"
+                value={editCustomer.phoneNumber}
+                onChange={(e) => setEditCustomer({ ...editCustomer, phoneNumber: e.target.value })}
+                fullWidth
+                placeholder="(555) 123-4567"
+              />
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Bank PIN *"
+                variant="outlined"
+                value={editCustomer.bankPin}
+                onChange={(e) => setEditCustomer({ ...editCustomer, bankPin: e.target.value })}
+                fullWidth
+                required
+                inputProps={{ maxLength: 4, pattern: '[0-9]{4}' }}
+                placeholder="4-digit PIN"
+                helperText="4-digit numeric PIN"
+              />
+            </Grid>
+            
+            <Grid item xs={12}>
+              <FormControl fullWidth required error={validationError && !editCustomer.bankName}>
+                <InputLabel>Bank Association *</InputLabel>
+                <Select
+                  label="Bank Association *"
+                  value={editCustomer.bankName}
+                  onChange={(e) => setEditCustomer({ ...editCustomer, bankName: e.target.value })}
+                >
+                  <MenuItem value="Wells Fargo">Wells Fargo</MenuItem>
+                  <MenuItem value="Bank of America">Bank of America</MenuItem>
+                  <MenuItem value="JP Morgan Chase">JP Morgan Chase</MenuItem>
+                  <MenuItem value="CitiBank">CitiBank</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions sx={{ p: 3, pt: 2 }}>
+          <Button 
+            onClick={handleCloseDialog} 
+            color="inherit"
+            size="large"
+            sx={{ mr: 1 }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={isAddingCustomer ? handleSubmit : handleEditSubmit} 
+            variant="contained"
+            size="large"
+            startIcon={isAddingCustomer ? <AddIcon /> : <EditIcon />}
+          >
+            {isAddingCustomer ? 'Add Customer' : 'Save Changes'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        </TableBody>
-      </Table>
-    </TableContainer>
-
-
-
-  </div>
-
+      {/* Main Content */}
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+          <CircularProgress size={60} />
+          <Typography variant="h6" sx={{ ml: 2 }}>
+            Loading customers...
+          </Typography>
+        </Box>
+      ) : (
+        <Card elevation={3}>
+          <CardContent sx={{ p: 0 }}>
+            {filteredCustomers.length === 0 ? (
+              <Box p={4} textAlign="center">
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  No customers found
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {customers.length === 0 
+                    ? "No customers in the system yet. Add the first customer to get started."
+                    : "Try adjusting your search criteria or filters."
+                  }
+                </Typography>
+              </Box>
+            ) : (
+              <TableContainer>
+                <Table>
+                  <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Customer Name</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Contact Info</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Bank PIN</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Accounts</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>Bank</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }} align="center">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredCustomers.map((customer) => (
+                      <TableRow
+                        key={customer.customerId}
+                        sx={{ 
+                          '&:last-child td, &:last-child th': { border: 0 },
+                          '&:hover': { backgroundColor: '#f9f9f9' }
+                        }}
+                      >
+                        <TableCell>
+                          <Chip 
+                            label={`#${customer.customerId}`} 
+                            size="small" 
+                            color="primary" 
+                            variant="outlined" 
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box>
+                            <Typography variant="body1" fontWeight="medium">
+                              {customer.firstName} {customer.lastName}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Box>
+                            <Typography variant="body2">{customer.email}</Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              {customer.phoneNumber}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip 
+                            label={customer.bankPin} 
+                            size="small" 
+                            color="warning" 
+                            variant="filled"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box display="flex" gap={0.5} flexWrap="wrap">
+                            {customer.accounts?.map(accountId => (
+                              <Chip
+                                key={accountId}
+                                label={accountId}
+                                size="small"
+                                color="success"
+                                variant="outlined"
+                              />
+                            )) || <Typography variant="body2" color="textSecondary">No accounts</Typography>}
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip 
+                            label={customer.bankName} 
+                            size="small" 
+                            color="info" 
+                            variant="filled"
+                          />
+                        </TableCell>
+                        <TableCell align="center">
+                          <Box display="flex" gap={0.5} justifyContent="center" flexWrap="wrap">
+                            <Tooltip title="Edit Customer">
+                              <IconButton 
+                                color="primary" 
+                                onClick={() => handleEdit(customer)}
+                                size="small"
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete Customer">
+                              <IconButton 
+                                color="error" 
+                                onClick={() => handleDelete(customer.customerId)}
+                                size="small"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Button 
+                              variant="outlined" 
+                              size="small" 
+                              onClick={() => handleAddAccount(customer.customerId)}
+                              sx={{ minWidth: 'auto' }}
+                            >
+                              +Account
+                            </Button>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </Box>
 
   );
 }

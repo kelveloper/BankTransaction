@@ -1,0 +1,35 @@
+{
+  "name": "banking-management-system",
+  "version": "1.0.0",
+  "description": "Professional Banking Management System for Bank Employees",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd reactfrontend && npm start",
+    "dev:backend": "cd final && ./mvnw spring-boot:run",
+    "build": "cd reactfrontend && npm run build",
+    "build:frontend": "cd reactfrontend && npm install && npm run build",
+    "install:frontend": "cd reactfrontend && npm install",
+    "install:backend": "cd final && ./mvnw clean install",
+    "test": "cd final && ./mvnw test",
+    "start:backend": "cd final && ./mvnw spring-boot:run",
+    "start:frontend": "cd reactfrontend && npm start"
+  },
+  "keywords": [
+    "banking",
+    "management",
+    "react",
+    "spring-boot",
+    "mysql",
+    "full-stack"
+  ],
+  "author": "Bank Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
