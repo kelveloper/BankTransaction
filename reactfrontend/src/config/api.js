@@ -21,7 +21,14 @@ export const apiCall = async (endpoint, options = {}) => {
     },
   };
   
-  return fetch(url, mergedOptions);
+  const response = await fetch(url, mergedOptions);
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Error retrieving data! status: ${response.status}, message: ${errorText}`);
+  }
+  
+  return response.json();
 };
 
 export default API_BASE_URL;

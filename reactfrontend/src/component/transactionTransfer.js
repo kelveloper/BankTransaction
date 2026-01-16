@@ -81,7 +81,7 @@ function TransactionTransfer() {
         Source Account:
         <Select value={currentAccount} onChange={handleCurrentAccountChange}>
           <MenuItem value={null}>Select Current Account</MenuItem>
-          {accounts.map((account) => (
+          {(accounts || []).map((account) => (
             <MenuItem key={account.accountId} value={account.accountId}>
               {account.accountId}
             </MenuItem>
@@ -95,7 +95,7 @@ function TransactionTransfer() {
           onChange={handleNewAccountChange}
         >
           <MenuItem value={null}>Select New Account</MenuItem>
-          {accounts.map((account) => (
+          {(accounts || []).map((account) => (
             <MenuItem key={account.accountId} value={account.accountId}>
               {account.accountId}
             </MenuItem>

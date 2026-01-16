@@ -127,7 +127,7 @@ function TransactionAdd({ onAddTransaction }) {
               onChange={handleAccountChange}
             >
               <MenuItem value={null}></MenuItem>
-              {accounts.map((account) => (
+              {(accounts || []).map((account) => (
                 <MenuItem key={account.accountId} value={account.accountId}>
                   {account.accountId}
                 </MenuItem>
