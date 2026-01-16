@@ -18,6 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { apiCall } from '../config/api';
 
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -55,17 +56,10 @@ function SingleCustomer() {
   }, []);
   
   async function getAllCustomers() {
-    fetch(`api/customers/${6}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Error retrieving all customers! status: " + response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setCustomers(data);
-      })
-      .catch(error => {
+    try {
+      const data = await apiCall(`api/customers/${6}`);
+      setCustomers(data);
+    } catch (error) {
         console.error('Error fetching customer data', error);
       });
   }
@@ -91,9 +85,8 @@ function SingleCustomer() {
       bankPin: editCustomer.bankPin,
       bankName: editCustomer.bankName
     }
-    await fetch('api/customers/add', {
+    await apiCall('api/customers/add', {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     }).then(() => {
       handleCloseDialog();
@@ -121,9 +114,8 @@ function SingleCustomer() {
       bankName: editCustomer.bankName
 
     }
-    await fetch('api/customers/' + data.customerId, {
+    await apiCall('api/customers/' + data.customerId, {
       method: 'PUT',
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     }).then(() => {
       handleCloseDialog();
@@ -134,7 +126,7 @@ function SingleCustomer() {
     })
   }
   async function handleDelete(id) {
-    await fetch('api/customers/' + id, {
+    await apiCall('api/customers/' + id, {
       method: 'DELETE',
     }).then(() => {
       getAllCustomers();
