@@ -61,7 +61,7 @@ function SingleCustomer() {
       setCustomers(data);
     } catch (error) {
         console.error('Error fetching customer data', error);
-      });
+    }
   }
   async function handleAdd() {
     setIsAddingCustomer(true);
