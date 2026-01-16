@@ -9,6 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { apiCall } from '../config/api';
 
 function TransactionTransfer() {
   const [amount, setAmount] = useState("");
@@ -19,10 +20,13 @@ function TransactionTransfer() {
 
   useEffect(() => {
     // Fetch accounts data and update the 'accounts' state
-    fetch("api/accounts")
-      .then((res) => res.json())
+    apiCall("/api/accounts")
       .then((data) => {
         setAccounts(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching accounts:", error);
+        setAccounts([]);
       });
   }, []);
 

@@ -9,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {FormControl} from '@mui/material';
+import { apiCall } from '../config/api';
 
 function TransactionAdd({ onAddTransaction }) {
   const [transactionType, setTransactionType] = useState("");
@@ -19,10 +20,13 @@ function TransactionAdd({ onAddTransaction }) {
   const [errors, setErrors] = useState([]);
 
   useEffect(() => {
-    fetch("api/accounts")
-      .then((res) => res.json())
+    apiCall("/api/accounts")
       .then((data) => {
         setAccounts(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching accounts:", error);
+        setAccounts([]);
       });
   }, []);
 

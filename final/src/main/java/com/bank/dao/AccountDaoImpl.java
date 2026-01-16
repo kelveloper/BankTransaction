@@ -26,10 +26,10 @@ public class AccountDaoImpl implements AccountDao{
         @Override
         public Account mapRow(ResultSet rs, int index) throws SQLException {
             Account acc = new Account();
-            acc.setAccountId(rs.getInt("accountId"));
+            acc.setAccountId(rs.getInt("accountid"));
             acc.setBalance(rs.getDouble("balance"));
-            acc.setAccountType(rs.getString("accountType"));
-            acc.setInterestRate(rs.getDouble("interestRate"));
+            acc.setAccountType(rs.getString("accounttype"));
+            acc.setInterestRate(rs.getDouble("interestrate"));
             return acc;
         }
     }
@@ -42,7 +42,7 @@ public class AccountDaoImpl implements AccountDao{
 
     @Override
     public List<Account> getAllAccountsWithCustomerId(int id) {
-        final String SELECT_ALL_ACCOUNTS = "select accounts.accountId, accounts.balance, accounts.accountType, accounts.interestRate " +
+        final String SELECT_ALL_ACCOUNTS = "select accounts.accountid, accounts.balance, accounts.accounttype, accounts.interestrate " +
                 "from accounts " +
                 "join customers_accounts on accounts.accountId = customers_accounts.accountId " +
                 "where customers_accounts.customerID = ?;";
@@ -52,7 +52,7 @@ public class AccountDaoImpl implements AccountDao{
     @Override
     public Account getAccountById(int id) {
         try {
-            final String SELECT_ACCOUNTS_BY_ID = "SELECT * FROM accounts WHERE accountId = ?";
+            final String SELECT_ACCOUNTS_BY_ID = "SELECT * FROM accounts WHERE accountid = ?";
             return jdbc.queryForObject(SELECT_ACCOUNTS_BY_ID, new AccountMapper(), id);
         } catch(DataAccessException ex) {
             return null;
@@ -61,7 +61,7 @@ public class AccountDaoImpl implements AccountDao{
 
     @Override
     public Account addAccount(Account account) {
-        final String INSERT_ACCOUNT = "INSERT INTO accounts(balance, accountType, interestRate) "
+        final String INSERT_ACCOUNT = "INSERT INTO accounts(balance, accounttype, interestrate) "
                 + "VALUES(?,?,?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update((Connection conn) -> {
@@ -76,12 +76,13 @@ public class AccountDaoImpl implements AccountDao{
             return statement;
 
         }, keyHolder);
-        account.setAccountId(keyHolder.getKey().intValue());
+        Integer accountId = (Integer) keyHolder.getKeys().get("accountid");
+        account.setAccountId(accountId);
         return account;
     }
     @Override
     public Account addAccountwithCustomerId(Account account, int id) {
-        final String INSERT_ACCOUNT = "INSERT INTO accounts(balance, accountType, interestRate) "
+        final String INSERT_ACCOUNT = "INSERT INTO accounts(balance, accounttype, interestrate) "
                 + "VALUES(?,?,?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update((Connection conn) -> {
@@ -96,8 +97,9 @@ public class AccountDaoImpl implements AccountDao{
             return statement;
 
         }, keyHolder);
-        account.setAccountId(keyHolder.getKey().intValue());
-        final String INSERT_CUSTOMER_ACCOUNT = "INSERT INTO customers_accounts(customerID, accountId) "
+        Integer accountId = (Integer) keyHolder.getKeys().get("accountid");
+        account.setAccountId(accountId);
+        final String INSERT_CUSTOMER_ACCOUNT = "INSERT INTO customers_accounts(customerid, accountid) "
                 + "VALUES(?,?)";
         jdbc.update(INSERT_CUSTOMER_ACCOUNT,
                 id,
