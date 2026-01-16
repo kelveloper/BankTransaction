@@ -2,7 +2,9 @@
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://banking-backend-tqfs.onrender.com';
 
 export const apiCall = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}/${endpoint}`;
+  // Remove leading slash from endpoint to avoid double slashes
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+  const url = `${API_BASE_URL}/${cleanEndpoint}`;
   
   const defaultOptions = {
     headers: {
