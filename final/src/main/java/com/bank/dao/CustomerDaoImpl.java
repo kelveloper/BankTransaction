@@ -50,7 +50,13 @@ public class  CustomerDaoImpl implements CustomerDao{
         Integer customerId = (Integer) keyHolder.getKeys().get("customerid");
         customer.setCustomerId(customerId);
         if (!customer.getBankName().trim().isEmpty()) {
-            addCustomerToBank(customerId, getCustomerBankId(customer.getBankName()));
+            try {
+                int bankId = getCustomerBankId(customer.getBankName());
+                addCustomerToBank(customerId, bankId);
+            } catch (EmptyResultDataAccessException e) {
+                // Bank name doesn't exist - skip bank association
+                System.out.println("Warning: Bank '" + customer.getBankName() + "' not found. Customer created without bank association.");
+            }
         }
         return customer;
     }
