@@ -2,25 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Banking App - Redirecting...</title>
+    <title>Banking App</title>
     <script type="text/javascript">
-      // Simple SPA redirect for Render static hosting
-      // Redirect to root and let React Router handle the routing
-      var currentPath = window.location.pathname;
-      if (currentPath !== '/') {
-        window.location.replace('/#' + currentPath);
-      }
+      // SPA redirect that preserves the URL for React Router
+      sessionStorage.redirect = location.href;
     </script>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding-top: 100px;
-      }
-    </style>
+    <meta http-equiv="refresh" content="0;URL='/'" />
   </head>
   <body>
-    <h2>Redirecting...</h2>
-    <p>If you are not redirected automatically, <a href="/">click here</a>.</p>
+    <p>Redirecting...</p>
   </body>
 </html>

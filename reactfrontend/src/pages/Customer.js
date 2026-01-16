@@ -99,15 +99,13 @@ function Customer() {
   async function getAllCustomers() {
     setLoading(true);
     try {
-      const response = await apiCall('api/customers');
-      if (!response.ok) {
-        throw new Error("Error retrieving all customers! status: " + response.status);
-      }
-      const data = await response.json();
+      const data = await apiCall('api/customers');
       setCustomers(data);
       setFilteredCustomers(data);
     } catch (error) {
       console.error('Error fetching customer data', error);
+      setCustomers([]);
+      setFilteredCustomers([]);
     } finally {
       setLoading(false);
     }
