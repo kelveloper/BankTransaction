@@ -28,7 +28,23 @@ export const apiCall = async (endpoint, options = {}) => {
     throw new Error(`Error retrieving data! status: ${response.status}, message: ${errorText}`);
   }
   
-  return response.json();
+  // Check if response has content before parsing JSON
+  const contentType = response.headers.get('content-type');
+  const contentLength = response.headers.get('content-length');
+  
+  // Handle empty responses (common with DELETE operations)
+  if (contentLength === '0' || response.status === 204) {
+    return null;
+  }
+  
+  // Only parse JSON if response contains JSON content
+  if (contentType && contentType.includes('application/json')) {
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
+  }
+  
+  // For non-JSON responses, return the text
+  return await response.text();
 };
 
 export default API_BASE_URL;
