@@ -1,9 +1,10 @@
 -- Sample data for PostgreSQL - matching DAO expectations with lowercase columns
 -- Banks
 INSERT INTO banks (name, address) VALUES
-('First National Bank', '123 Main St'),
-('Second Community Bank', '456 Oak Ave'),
-('Third Regional Bank', '789 Pine St');
+('Wells Fargo', '123 Main St'),
+('Bank of America', '456 Oak Ave'),
+('JP Morgan Chase', '789 Pine St'),
+('CitiBank', '101 Wall St');
 
 -- Customers  
 INSERT INTO customers (firstname, lastname, email, phonenumber, bankpin) VALUES
