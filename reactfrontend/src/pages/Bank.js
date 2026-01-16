@@ -31,9 +31,6 @@ function Bank() {
 
   useEffect(() => {
     apiCall('api/banks')
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         //console.log(data);
         setBankData(data);
@@ -45,25 +42,16 @@ function Bank() {
     setCustomerBoolean(true)
     setBankName(name)
     apiCall('api/banks/customers/' + id)
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         setCustomerData(data);
       });
     
     apiCall('api/banks/customers/count')
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         setOtherBankCustomers(data);
       });
     
     apiCall('api/banks/customers/count/' + id)
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         setSelectedBankCustomers(data);
       });

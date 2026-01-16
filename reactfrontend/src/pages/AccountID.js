@@ -13,6 +13,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { apiCall } from '../config/api';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -46,20 +47,14 @@ function AccountID() {
     let { Accountid } = useParams();
 
     useEffect(() => {
-        fetch('api/accounts/customer/' + Accountid)
-          .then((res) => {
-            return res.json();
-          })
+        apiCall('api/accounts/customer/' + Accountid)
           .then((data) => {
             //console.log(data)
             setAccountData(data);
           });
       }, [Accountid]);
       async function getAccount() {
-        fetch('api/accounts/customer/' + Accountid)
-          .then((res) => {
-            return res.json();
-          })
+        apiCall('api/accounts/customer/' + Accountid)
           .then((data) => {
             //console.log(data);
             setAccountData(data);
@@ -81,9 +76,8 @@ function AccountID() {
           balance: editAccount.balance,
           accountType: editAccount.accountType,
           interestRate: editAccount.interestRate}
-          await fetch('api/accounts/update', {
+          await apiCall('api/accounts/update', {
             method: 'PUT',
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
           }).then(() => {
             getAccount();
@@ -120,9 +114,8 @@ function AccountID() {
           accountType: accountType,
           interestRate: AccountInterestRate};
         
-        await fetch('api/accounts/add/' + Accountid, {
+        await apiCall('api/accounts/add/' + Accountid, {
           method: 'POST',
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         }).then(() => {
           getAccount();
@@ -139,7 +132,7 @@ function AccountID() {
     
     
       async function deleteAccount(id) {
-        await fetch('api/accounts/delete/' + id, { method: 'DELETE' });
+        await apiCall('api/accounts/delete/' + id, { method: 'DELETE' });
         getAccount();
       }
 

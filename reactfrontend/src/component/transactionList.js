@@ -13,9 +13,6 @@ function TransactionList() {
 
     useEffect(() => {
       apiCall('api/transactions')
-        .then((res) => {
-          return res.json();
-        })
         .then((data) => {
           //console.log(data);
           setTransactionsData(data);

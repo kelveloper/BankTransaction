@@ -53,9 +53,6 @@ function Account() {
   
   useEffect(() => {
     apiCall('api/accounts')
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         //console.log(data);
         setAccountData(data);
@@ -85,9 +82,6 @@ function Account() {
 
   async function getAccount() {
     apiCall('api/accounts')
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         //console.log(data);
         setAccountData(data);

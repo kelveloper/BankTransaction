@@ -40,16 +40,13 @@ const Home = () => {
     const fetchDashboardData = async () => {
       try {
         // Get all customers count
-        const customersResponse = await apiCall('api/customers');
-        const customers = await customersResponse.json();
+        const customers = await apiCall('api/customers');
         
         // Get all accounts count  
-        const accountsResponse = await apiCall('api/accounts');
-        const accounts = await accountsResponse.json();
+        const accounts = await apiCall('api/accounts');
         
         // Get all transactions count
-        const transactionsResponse = await apiCall('api/transactions');
-        const transactions = await transactionsResponse.json();
+        const transactions = await apiCall('api/transactions');
 
         setDashboardStats({
           totalCustomers: customers.length,
@@ -288,7 +285,7 @@ const Home = () => {
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, color: '#2c3e50' }}>
                 System Status
-              </Typography>
+        </Typography>
               <Divider sx={{ mb: 2, borderColor: '#e9ecef' }} />
               <Box mb={2}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -330,7 +327,7 @@ const Home = () => {
               <Divider sx={{ my: 2, borderColor: '#e9ecef' }} />
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, color: '#2c3e50' }}>
                 Quick Add
-              </Typography>
+        </Typography>
               <Box display="flex" gap={1}>
                 <Button 
                   component={Link} 

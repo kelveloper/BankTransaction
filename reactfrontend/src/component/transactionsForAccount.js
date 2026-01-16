@@ -4,6 +4,7 @@ import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
+import { apiCall } from '../config/api';
 
 
 function TransactionsForAccount({customerId}) {
@@ -11,13 +12,14 @@ function TransactionsForAccount({customerId}) {
 
 
     useEffect(() => {
-      fetch(`api/transactions/account/${customerId}`)
-        .then((res) => {
-          return res.json();
-        })
+      apiCall(`api/transactions/account/${customerId}`)
         .then((data) => {
           //console.log(data);
           setTransactionsData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching transactions:", error);
+          setTransactionsData([]);
         });
     });
  
